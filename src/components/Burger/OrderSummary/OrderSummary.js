@@ -24,7 +24,7 @@ const OrderSummary = (props) => {
         CANCLE
       </Button>{" "}
       &nbsp;
-      <Button outline color="success">
+      <Button outline color="success" onClick={props.order}>
         CONTINUE
       </Button>
     </Aux>

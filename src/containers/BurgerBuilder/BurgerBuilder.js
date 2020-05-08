@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import axios from "../../axios-order";
+
 import Aux from "../../hoc/Auxiliray/Auxiliray";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import { INGREDIENTS_PRICES } from "../../constants/IngredientPrices";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import ShowModal from "../../components/UI/Modal/ShowModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 export default class BurgerBuilder extends Component {
   state = {
@@ -17,6 +20,7 @@ export default class BurgerBuilder extends Component {
     totalPrice: 20,
     purchasable: false,
     modal: false,
+    loading: false,
   };
 
   addIngredientHandler = (type) => {
@@ -65,12 +69,44 @@ export default class BurgerBuilder extends Component {
     this.setState({ modal: !this.state.modal });
   };
 
+  purchaseContinueHandler = () => {
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: "Rashid Naveed",
+        address: {
+          street: "71-L, Johar town",
+          zipCode: "54782",
+          country: "Pakistan",
+        },
+        email: "chrashidnaveed95@gmail.com",
+      },
+      deliveryMethod: "fast service",
+    };
+    axios
+      .post("/orders.json", order)
+      .then((res) => this.setState({ loading: false, modal: false }))
+      .catch((err) => this.setState({ loading: false, modal: false }));
+  };
   render() {
     const disabledInfo = {
       ...this.state.ingredients,
     };
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
+    }
+    let orderSummary = (
+      <OrderSummary
+        ingredients={this.state.ingredients}
+        toggle={this.toggle}
+        price={this.state.totalPrice}
+        order={this.purchaseContinueHandler}
+      />
+    );
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
     }
     return (
       <Aux>
@@ -79,11 +115,7 @@ export default class BurgerBuilder extends Component {
           toggle={this.toggle}
           modal={this.state.modal}
         >
-          <OrderSummary
-            ingredients={this.state.ingredients}
-            toggle={this.toggle}
-            price={this.state.totalPrice}
-          />
+          {orderSummary}
         </ShowModal>
         <Burger ingredients={this.state.ingredients} />
         <BuildControls

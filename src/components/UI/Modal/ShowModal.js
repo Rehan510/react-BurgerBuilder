@@ -3,7 +3,10 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 class ShowModal extends Component {
   shouldComponentUpdate(nextProps, prevProps) {
-    return nextProps.modal !== this.props.modal;
+    return (
+      nextProps.modal !== this.props.modal ||
+      nextProps.children !== this.props.children
+    );
   }
 
   render() {

@@ -7,16 +7,17 @@
 
 .NavigationItem a {
   color: #8f5c2c;
-  text-decoration: none;
   width: 100%;
   box-sizing: border-box;
   display: block;
+  text-decoration: none;
 }
 
 .NavigationItem a:hover,
 .NavigationItem a:active,
 .NavigationItem a.active {
   color: #40a4c8;
+  text-decoration: none;
 }
 
 @media (min-width: 500px) {

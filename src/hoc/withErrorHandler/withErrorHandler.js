@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ShowModal from "../../components/UI/Modal/ShowModal";
-import Aux from "../Auxiliray/Auxiliray";
+// import Aux from "../Auxiliray/Auxiliray";
 const withErrorHandler = (WrappedComponent, axios) => {
   return class extends Component {
     state = {
@@ -32,7 +32,7 @@ const withErrorHandler = (WrappedComponent, axios) => {
     };
     render() {
       return (
-        <Aux>
+        <React.Fragment>
           <ShowModal
             modal={this.state.modal}
             toggle={this.errorConfirmHandler}
@@ -41,7 +41,7 @@ const withErrorHandler = (WrappedComponent, axios) => {
             {this.state.error ? this.state.error.message : null}
           </ShowModal>
           <WrappedComponent {...this.props} />
-        </Aux>
+        </React.Fragment>
       );
     }
   };

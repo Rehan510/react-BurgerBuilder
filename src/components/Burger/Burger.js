@@ -3,6 +3,8 @@ import classes from "./Burger.module.css";
 import BurgerIngredients from "./BurgerIngredients/BurgerIngredients";
 
 const Burger = (props) => {
+  // Transforming the object into array of objects
+  // Alternative approch is (for-in) loop as shown in Order.js file line:7
   let transformedIngerdients = Object.keys(props.ingredients)
     .map((ingKey) => {
       //   console.log("props ingredients", props.ingredients);

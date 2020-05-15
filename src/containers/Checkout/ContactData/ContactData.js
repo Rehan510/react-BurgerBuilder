@@ -6,6 +6,8 @@ import axios from "../../../axios-order";
 import { Button } from "reactstrap";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import * as orderActions from "../../../store/actions/index";
 
 export class ContactData extends Component {
   state = {
@@ -101,7 +103,7 @@ export class ContactData extends Component {
 
   orderHandler = (event) => {
     event.preventDefault();
-    this.setState({ loading: true });
+
     const formData = {};
     for (let formElementIdentifier in this.state.orderForm) {
       formData[formElementIdentifier] = this.state.orderForm[
@@ -113,17 +115,7 @@ export class ContactData extends Component {
       price: this.props.price,
       orderData: formData,
     };
-    axios
-      .post("/orders.json", order)
-      .then((res) => {
-        console.log(res);
-        this.setState({ loading: false });
-        this.props.history.push("/");
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
+    this.props.onOrderBurger(order);
   };
 
   checkValidity = (value, rules) => {
@@ -190,7 +182,7 @@ export class ContactData extends Component {
         </Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -204,8 +196,20 @@ export class ContactData extends Component {
 
 const getStateToProps = (state) => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   };
 };
-export default connect(getStateToProps)(ContactData);
+
+const getDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) =>
+      dispatch(orderActions.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(
+  getStateToProps,
+  getDispatchToProps
+)(withErrorHandler(ContactData, axios));

@@ -9,26 +9,15 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import ShowModal from "../../components/UI/Modal/ShowModal";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import * as actionType from "../../store/action";
+import * as burgerBuilderActions from "../../store/actions/index";
 
 class BurgerBuilder extends Component {
   state = {
     modal: false,
-    loading: false,
-    error: false,
   };
 
   componentDidMount() {
-    // axios
-    //   .get("https://react-my-burger-e3301.firebaseio.com/ingredients.json")
-    //   .then((res) => {
-    //     // console.log(res);
-    //     this.setState({ ingredients: res.data });
-    //     // this.updatePurchaseState(this.state.ingredients);
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ error: true });
-    //   });
+    this.props.onInitIngredients();
   }
 
   updatePurchaseState = (ingredients) => {
@@ -57,7 +46,7 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
     let orderSummary = null;
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Failed to load ingredients from server</p>
     ) : (
       <Spinner />
@@ -107,15 +96,17 @@ const mapStateToProps = (state) => {
   return {
     ings: state.ingredients,
     price: state.totalPrice,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onAddIngredients: (ingName) =>
-      dispatch({ type: actionType.ADD_INGREDIENT, ingredientName: ingName }),
+      dispatch(burgerBuilderActions.addIngredients(ingName)),
     onRemoveIngredients: (ingName) =>
-      dispatch({ type: actionType.REMOVE_INGREDIENT, ingredientName: ingName }),
+      dispatch(burgerBuilderActions.removeIngredients(ingName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
   };
 };
 

@@ -11,12 +11,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
 import burgerReducer from "./store/reducers/burgerReducer";
 import orderReducer from "./store/reducers/orderReducer";
+import authReducer from "./store/reducers/authReducer";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   burgerBuilder: burgerReducer,
   order: orderReducer,
+  auth: authReducer,
 });
 
 const store = createStore(

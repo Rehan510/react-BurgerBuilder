@@ -10,4 +10,4 @@ export {
   fetchOrders,
 } from "./orderActionCreator";
 
-export { auth, logout } from "./auth";
+export { auth, logout, authRedirectPath } from "./auth";

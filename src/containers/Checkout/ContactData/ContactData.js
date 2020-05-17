@@ -8,6 +8,7 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as orderActions from "../../../store/actions/index";
+import { updateObject, checkValidity } from "../../../shared/utility";
 
 export class ContactData extends Component {
   state = {
@@ -114,38 +115,26 @@ export class ContactData extends Component {
       ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
+      userId: this.props.userId,
     };
     this.props.onOrderBurger(order, this.props.token);
   };
 
-  checkValidity = (value, rules) => {
-    let valid = true;
-    if (rules.required) {
-      valid = value.trim() !== "" && valid;
-    }
-    if (rules.minLength) {
-      valid = value.length >= rules.minLength && valid;
-    }
-    if (rules.maxLength) {
-      valid = value.length <= rules.maxLength && valid;
-    }
-    return valid;
-  };
-
   inputChangedHandler = (event, inputIdentifier) => {
-    const updatedOrderForm = {
-      ...this.state.orderForm,
-    };
-    const updatedFormElement = {
-      ...updatedOrderForm[inputIdentifier],
-    };
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.isValid = this.checkValidity(
-      updatedFormElement.value,
-      updatedFormElement.validation
+    const updatedFormElement = updateObject(
+      this.state.orderForm[inputIdentifier],
+      {
+        value: event.target.value,
+        isValid: checkValidity(
+          event.target.value,
+          this.state.orderForm[inputIdentifier].validation
+        ),
+        touched: true,
+      }
     );
-    updatedFormElement.touched = true;
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement,
+    });
 
     let formIsValid = true;
     for (let inputCheck in updatedOrderForm) {
@@ -200,6 +189,7 @@ const getStateToProps = (state) => {
     price: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 

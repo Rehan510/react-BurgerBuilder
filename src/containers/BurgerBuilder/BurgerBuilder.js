@@ -32,7 +32,7 @@ class BurgerBuilder extends Component {
   };
 
   toggle = () => {
-    if (this.isAuthenticated) {
+    if (this.props.isAuthenticated) {
       this.setState({ modal: !this.state.modal });
     } else {
       this.props.onSetAuthRedirectPath("/checkout");

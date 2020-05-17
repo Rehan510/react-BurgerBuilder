@@ -1,12 +1,10 @@
-import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { Component, Suspense } from "react";
+import { Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import ContactData from "./ContactData/ContactData";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
+const ContactData = React.lazy(() => import("./ContactData/ContactData"));
 export class Checkout extends Component {
- 
-
   checkoutCanclledHandler = () => {
     this.props.history.goBack();
   };
@@ -29,7 +27,11 @@ export class Checkout extends Component {
           />
           <Route
             path={this.props.match.path + "/contact-data"}
-            component={ContactData}
+            render={() => (
+              <Suspense fallback={<div>Loading...</div>}>
+                <ContactData />
+              </Suspense>
+            )}
           />
         </React.Fragment>
       );
@@ -45,4 +47,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Checkout);
+export default withRouter(connect(mapStateToProps)(Checkout));
